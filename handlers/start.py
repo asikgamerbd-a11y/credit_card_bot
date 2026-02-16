@@ -108,4 +108,45 @@ async def go_back(callback: CallbackQuery, state: FSMContext, session: AsyncSess
     prev_screen = nav_stack.back(user_id)
     
     # Route to appropriate handler based on previous screen
-    if prev
+    if prev_screen == "MAIN_MENU":
+        is_admin = (user_id == config.ADMIN_ID)
+        await state.set_state(UserStates.U_MAIN)
+        await callback.message.edit_text(
+            "🏠 <b>Main Menu</b>\n\nSelect an option:",
+            reply_markup=main_menu_keyboard(is_admin),
+            parse_mode="HTML"
+        )
+    elif prev_screen == "CARDS_MENU":
+        await state.set_state(UserStates.U_CARDS_MENU)
+        await callback.message.edit_text(
+            "💳 <b>Create Credit Card</b>\n\nChoose an option:",
+            reply_markup=cards_menu_keyboard(),
+            parse_mode="HTML"
+        )
+    elif prev_screen == "INFO_MENU":
+        await state.set_state(UserStates.U_INFO_MENU)
+        await callback.message.edit_text(
+            "🧾 <b>Create Card Info</b>\n\nChoose an option:",
+            reply_markup=info_menu_keyboard(),
+            parse_mode="HTML"
+        )
+    elif prev_screen == "ADMIN_MENU":
+        await state.set_state(AdminStates.A_ADMIN_MENU)
+        await callback.message.edit_text(
+            "🔒 <b>Admin Panel</b>\n\nSelect an option:",
+            reply_markup=admin_menu_keyboard(),
+            parse_mode="HTML"
+        )
+    else:
+        # Default to main menu
+        nav_stack.clear(user_id)
+        nav_stack.push(user_id, "MAIN_MENU")
+        await state.set_state(UserStates.U_MAIN)
+        is_admin = (user_id == config.ADMIN_ID)
+        await callback.message.edit_text(
+            "🏠 <b>Main Menu</b>\n\nSelect an option:",
+            reply_markup=main_menu_keyboard(is_admin),
+            parse_mode="HTML"
+        )
+    
+    await callback.answer()
