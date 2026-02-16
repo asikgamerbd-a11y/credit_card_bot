@@ -1,0 +1,16 @@
+services:
+  - type: worker
+    name: credit-card-bot
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: ADMIN_ID
+        value: 8197284774
+      - key: IMAGE_URL
+        value: https://res.cloudinary.com/dv6ugwzk8/image/upload/v1758564178/jnzm7tnz7qyab3jionie.jpg
+      - key: DB_URL
+        value: sqlite+aiosqlite:///bot_database.db
